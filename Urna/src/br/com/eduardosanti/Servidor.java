@@ -9,78 +9,84 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Servidor {
-	
-	List<PrintWriter> escritores = new ArrayList<>();
+
+	List<Socket> sockets = new ArrayList<>();
 	ServerSocket server;
-	Socket socket;
-	
-	public Servidor(){
-		try {
-			server = new ServerSocket(5000);
-			socket = server.accept();
-			new Thread(new EscutaUrna(socket)).start();
-			PrintWriter printer = new PrintWriter(socket.getOutputStream());
-			escritores.add(printer);
-		} catch (IOException e) {
-			//e.printStackTrace();
-		}
+
+	public Servidor() {
+
 	}
-	
-	private void encaminharParaTodos(String texto){
-		for (PrintWriter print : escritores){
+
+	public void connect() throws IOException {
+		server = new ServerSocket(5000);
+
+		while (true) {
 			try {
-				print.println(texto);
-				print.flush();
-				System.out.println("to aqui");
-				System.err.println(texto);
-			} catch (Exception e) {
-				//e.printStackTrace();
+
+				Socket socket = server.accept();
+				sockets.add(socket);
+
+				new Thread(new EscutaUrna(socket)).start();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
 
-	public static void main(String[] args) {
-		new Servidor();
+	private void encaminharParaTodos(String texto) {
+		for (Socket socket : sockets) {
+			try {
+				PrintWriter print = new PrintWriter(socket.getOutputStream());
+				print.println(texto);
+				print.flush();
+				System.err.println(texto);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
-	
-	
-	
-	private class EscutaUrna implements Runnable{
+
+	public static void main(String[] args) throws IOException {
+		Servidor server = new Servidor();
+		server.connect();
+	}
+
+	private class EscutaUrna implements Runnable {
 
 		Scanner leitor;
 		int candidatoA, candidatoB, candidatoC, candidatoD;
-		
+
 		public EscutaUrna(Socket socket) {
 			try {
 				leitor = new Scanner(socket.getInputStream());
 			} catch (Exception e) {
-				//e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
-		
+
 		@Override
 		public void run() {
 			String votoRecebido;
 			while ((votoRecebido = leitor.nextLine()) != null) {
 				switch (votoRecebido) {
 				case "Eneias":
-					candidatoA ++;
-					encaminharParaTodos("d" + candidatoA);
+					candidatoA++;
+					encaminharParaTodos("Eneias: " + candidatoA + " voto(s)");
 					System.out.println("Eneias: " + candidatoA);
 					break;
 				case "Lula":
-					candidatoB ++;
-					encaminharParaTodos("d" + candidatoA);
+					candidatoB++;
+					encaminharParaTodos("Lula: " + candidatoB + " voto(s)");
 					System.out.println("Lula: " + candidatoB);
 					break;
 				case "Collor":
-					candidatoC ++;
-					encaminharParaTodos("d" + candidatoA);
+					candidatoC++;
+					encaminharParaTodos("Collor: " + candidatoC + " voto(s)");
 					System.out.println("Collor: " + candidatoC);
 					break;
 				case "FHC":
-					candidatoD ++;
-					encaminharParaTodos("d" + candidatoA);
+					candidatoD++;
+					encaminharParaTodos("FHC: " + candidatoD + " voto(s)");
 					System.out.println("FHC: " + candidatoD);
 					break;
 				default:
@@ -89,7 +95,7 @@ public class Servidor {
 				System.out.println("Recebi: " + votoRecebido);
 			}
 		}
-		
+
 	}
 
 }
