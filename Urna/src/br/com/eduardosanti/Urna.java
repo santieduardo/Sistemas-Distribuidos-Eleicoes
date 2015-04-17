@@ -26,8 +26,9 @@ public class Urna extends JFrame {
 	public Urna(String nome) {
 		setTitle(nome);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(500, 80);
+		setSize(500, 70);
 		iniciaComponentes();
+		setResizable(false);
 		setVisible(true);
 	}
 	
@@ -77,7 +78,7 @@ public class Urna extends JFrame {
 							escritor.flush();
 							candidatoD.setSelected(false);
 						}else {
-							JOptionPane.showMessageDialog(null, "Você deve selecionar um ladrão");
+							JOptionPane.showMessageDialog(null, "VocÃª deve selecionar um ladrÃ£o");
 						}
 					}
 				}
@@ -100,7 +101,7 @@ public class Urna extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		new Urna("Sessão Eleitoral");
+		new Urna("SessÃ£o Eleitoral");
 	}
 
 }
