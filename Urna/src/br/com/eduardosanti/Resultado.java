@@ -2,6 +2,7 @@ package br.com.eduardosanti;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Window;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
@@ -24,7 +25,8 @@ public class Resultado extends JFrame {
 	public Resultado() {
 		initElementos();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(400, 300);
+		setSize(300, 200);
+		setResizable(false);
 		setVisible(true);
 	}
 
@@ -37,7 +39,6 @@ public class Resultado extends JFrame {
 		envio.setLayout(new BorderLayout());
 		getContentPane().add(BorderLayout.CENTER, scroll);
 		getContentPane().add(BorderLayout.SOUTH, envio);
-
 		configRede();
 	}
 
@@ -45,7 +46,7 @@ public class Resultado extends JFrame {
 		try {
 			socket = new Socket("127.0.0.1", 5000);
 			escritor = new PrintWriter(socket.getOutputStream());
-			leitor = new Scanner(socket.getInputStream()); // captura as informações do server
+			leitor = new Scanner(socket.getInputStream()); // captura as informaÃ§Ãµes do server
 			new Thread(new EscutaServidor()).start(); // cria thread para ouvir(private classEscutaServidor) o server
 		} catch (Exception e) {
 			// e.printStackTrace();
